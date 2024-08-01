@@ -5,6 +5,7 @@ import S3Service from '../services/s3Service';
 import logger from '../config/logger';
 
 const router = Router();
+
 const s3Service = new S3Service();
 
 router.post('/upload-proof', multer.single('file'), async (req: Request, res: Response) => {
