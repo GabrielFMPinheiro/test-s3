@@ -11,7 +11,6 @@ const mockUpload = jest.fn().mockReturnValue({
 AWS.S3.prototype.upload = mockUpload;
 
 describe('POST /billing/upload-proof', () => {
-  console.log(process.env.DISTRIBUITED_GENERATION_BUCKET);
   it('should upload a file successfully', async () => {
     const testFilePath = path.join(__dirname, 'testFile.txt');
     fs.writeFileSync(testFilePath, 'Test file content');
