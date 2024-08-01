@@ -1,0 +1,85 @@
+service: sls-add-file-in-s3
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  timeout: 30
+  stage: ${opt:stage, 'dev'}
+  memorySize: 1024
+  logs:
+    restApi: true
+  apiGateway:
+    apiKeys:
+      - name: MyApiKey
+    binaryMediaTypes:
+      - '*/*'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::${.env:BUCKET_NAME}/*
+
+resources:
+  Resources:
+    ApiGatewayCloudWatchLogsRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: 'serverlessApiGatewayCloudWatchRole'
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: apigateway.amazonaws.com
+              Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'ApiGatewayLogsPolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'logs:*'
+                  Resource: '*'
+    ApiGatewayAccount:
+      Type: 'AWS::ApiGateway::Account'
+      Properties:
+        CloudWatchRoleArn:
+          Fn::GetAtt:
+            - ApiGatewayCloudWatchLogsRole
+            - Arn
+
+functions:
+  app:
+    handler: dist/upload-proof.handler
+    events:
+      - http:
+          path: billing/upload-proof
+          method: post
+          private: true
+          cors: 
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    printOutput: true
+
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - tests/**
