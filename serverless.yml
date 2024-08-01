@@ -1,6 +1,8 @@
 service: sls-add-file-in-s3
 frameworkVersion: '3'
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -8,6 +10,10 @@ provider:
   timeout: 30
   stage: ${opt:stage, 'dev'}
   memorySize: 1024
+  environment:
+    DISTRIBUITED_GENERATION_BUCKET: ${env:DISTRIBUITED_GENERATION_BUCKET}
+    ROLLBAR_ACCESS_TOKEN: ${env:ROLLBAR_ACCESS_TOKEN}
+    ROLLBAR_ENVIRONMENT: ${env:ROLLBAR_ENVIRONMENT}
   logs:
     restApi: true
   apiGateway:
@@ -15,62 +21,26 @@ provider:
       - name: MyApiKey
     binaryMediaTypes:
       - '*/*'
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-      Resource: arn:aws:s3:::${.env:BUCKET_NAME}/*
-
-resources:
-  Resources:
-    ApiGatewayCloudWatchLogsRole:
-      Type: 'AWS::IAM::Role'
-      Properties:
-        RoleName: 'serverlessApiGatewayCloudWatchRole'
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: apigateway.amazonaws.com
-              Action: 'sts:AssumeRole'
-        Policies:
-          - PolicyName: 'ApiGatewayLogsPolicy'
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - 'logs:*'
-                  Resource: '*'
-    ApiGatewayAccount:
-      Type: 'AWS::ApiGateway::Account'
-      Properties:
-        CloudWatchRoleArn:
-          Fn::GetAtt:
-            - ApiGatewayCloudWatchLogsRole
-            - Arn
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource: arn:aws:s3:::${env:DISTRIBUITED_GENERATION_BUCKET}/*
 
 functions:
   app:
-    handler: dist/upload-proof.handler
+    handler: src/index.handler
     events:
       - http:
           path: billing/upload-proof
           method: post
           private: true
-          cors: 
-            origins:
-              - '*'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
+          cors: true
 
 plugins:
-  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
   - serverless-offline
 
 custom:
@@ -81,5 +51,5 @@ custom:
 package:
   individually: true
   exclude:
-    - node_modules/**
     - tests/**
+    - .github/**
