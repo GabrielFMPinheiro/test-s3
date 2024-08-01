@@ -8,7 +8,8 @@
     "lint": "eslint **/*.ts",
     "format": "eslint src/**/*.ts --fix",
     "test": "DOTENV_CONFIG_PATH=.env.test jest --config test/jest.config.js",
-    "test:coverage": "DOTENV_CONFIG_PATH=.env.test jest --config test/jest.config.js --coverage"
+    "test:coverage": "DOTENV_CONFIG_PATH=.env.test jest --config test/jest.config.js --coverage",
+    "lint:report": "eslint \"{src,apps,libs,test}/**/*.ts\" --output-file report/eslint-report.json --format json"
   },
   "dependencies": {
     "aws-sdk": "^2.1665.0",
