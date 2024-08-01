@@ -17,6 +17,10 @@ provider:
   apiGateway:
     apiKeys:
       - name: sls-s3-document-uploader-api-key
+    usagePlan:
+      throttle:
+        burstLimit: 200
+        rateLimit: 100
     binaryMediaTypes:
       - '*/*'
   iam:
