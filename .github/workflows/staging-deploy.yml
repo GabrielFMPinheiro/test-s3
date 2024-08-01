@@ -1,0 +1,21 @@
+name: Staging Deploy
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  jest:
+    name: 'Test and Quality'
+    uses: ./.github/workflows/common-test-and-quality.yml
+
+  deploy:
+    needs: [jest]
+    uses: ./.github/workflows/common-deploy.yml
+    secrets: inherit
+    with:
+      environment: stage

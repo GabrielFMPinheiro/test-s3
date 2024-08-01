@@ -11,5 +11,5 @@
     "moduleResolution": "node",
     "rootDir": "./"
   },
-  "exclude": ["node_modules", ".build", ".serveless"]
+  "exclude": ["node_modules", ".build", ".serveless", "**/tests/**"]
 }

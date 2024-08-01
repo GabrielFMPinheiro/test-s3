@@ -1,0 +1,17 @@
+name: Production Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  jest:
+    name: 'Test and Quality'
+    uses: ./.github/workflows/common-test-and-quality.yml
+
+  deploy:
+    needs: [jest]
+    uses: ./.github/workflows/common-deploy.yml
+    secrets: inherit
+    with:
+      environment: prod

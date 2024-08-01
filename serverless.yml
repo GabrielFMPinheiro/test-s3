@@ -14,11 +14,9 @@ provider:
     DISTRIBUITED_GENERATION_BUCKET: ${env:DISTRIBUITED_GENERATION_BUCKET}
     ROLLBAR_ACCESS_TOKEN: ${env:ROLLBAR_ACCESS_TOKEN}
     ROLLBAR_ENVIRONMENT: ${env:ROLLBAR_ENVIRONMENT}
-  logs:
-    restApi: true
   apiGateway:
     apiKeys:
-      - name: MyApiKey
+      - name: sls-s3-document-uploader-api-key
     binaryMediaTypes:
       - '*/*'
   iam:
@@ -31,7 +29,7 @@ provider:
 
 functions:
   app:
-    handler: src/index.handler
+    handler: src/app.handler
     events:
       - http:
           path: billing/upload-proof
@@ -50,6 +48,3 @@ custom:
 
 package:
   individually: true
-  exclude:
-    - tests/**
-    - .github/**

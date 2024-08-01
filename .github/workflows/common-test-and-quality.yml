@@ -1,0 +1,76 @@
+name: Test and Quality
+
+on: workflow_call
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.10.0'
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Dependencies install
+        run: npm ci
+
+      - name: Run test coverage
+        run: npm run test:coverage
+
+      - name: Publish Coverage
+        uses: 5monkeys/cobertura-action@v13
+        with:
+          path: report/coverage/cobertura-coverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 60
+          show_line: true
+          show_branch: true
+          show_class_names: true
+          only_changed_files: false
+          show_missing: true
+
+  code-quality:
+    name: Code Quality
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.10.0'
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Dependencies install
+        run: |
+          npm ci
+
+      - name: Save Code Linting Report JSON
+        continue-on-error: true
+        run: npm run lint:report
+
+      - name: Linter Report
+        uses: ataylorme/eslint-annotate-action@v2
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          report-json: 'report/eslint-report.json'
