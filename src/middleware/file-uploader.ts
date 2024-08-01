@@ -29,7 +29,7 @@ class FileUpload {
           errorMessage = 'One or more files exceed the 1MB limit. Please upload smaller files.';
           break;
         case 'LIMIT_UNEXPECTED_FILE':
-          errorMessage = 'Too many files. Only upload up to 10 files at a time.';
+          errorMessage = 'Too many files uploaded. The maximum allowed is 10, or parameters were not passed correctly.';
           break;
         case 'LIMIT_FILE_COUNT':
           errorMessage = 'The number of files exceeds the allowed limit.';
