@@ -17,6 +17,13 @@ jobs:
       - name: Checkout to repo
         uses: actions/checkout@v3
 
+      - name: Generate .env file
+        run: |
+          echo "NODE_ENV=${{ inputs.environment }}" > .env
+          echo "DISTRIBUITED_GENERATION_BUCKET=${{ secrets.DISTRIBUITED_GENERATION_BUCKET }}" >> .env
+          echo "ROLLBAR_ACCESS_TOKEN=${{ secrets.ROLLBAR_ACCESS_TOKEN }}" >> .env
+          echo "ROLLBAR_ENVIRONMENT=${{ secrets.ROLLBAR_ENVIRONMENT }}" >> .env
+
       - name: Setup node environment
         uses: actions/setup-node@v3
         with:
