@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es2018",
     "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "outDir": ".build",
+    "moduleResolution": "node",
+    "rootDir": "./"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", ".serverless"]
+  "exclude": ["node_modules", ".build", ".serveless"]
 }
