@@ -17,6 +17,13 @@ jobs:
       - name: Checkout to repo
         uses: actions/checkout@v3
 
+      - name: Generate .env file
+        run: |
+          echo "NODE_ENV=${{ inputs.environment }}" > .env
+          echo "AWS_TOPIC_BASE_ARN=${{ secrets.AWS_TOPIC_BASE_ARN }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+
       - name: Setup node environment
         uses: actions/setup-node@v3
         with:
