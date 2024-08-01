@@ -15,7 +15,7 @@ const uploadRoutes = (fileUpload: FileUpload, s3Service: S3Service) => {
       const files = req.files as Express.Multer.File[];
 
       if (!files || files.length === 0) {
-        res.status(400).send({ message: 'No files were uploaded.' });
+        res.status(400).send({ message: 'No files were uploaded. Please upload at least one file.' });
         return;
       }
 

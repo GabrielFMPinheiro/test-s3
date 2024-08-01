@@ -42,20 +42,20 @@ describe('POST /billing/upload-proof', () => {
 
     const response = await requestBuilder;
 
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe('The number of files exceeds the allowed limit.');
-    expect(mockUpload).toHaveBeenCalled();
-
     testFilePaths.forEach((filePath) => {
       fs.unlinkSync(filePath);
     });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('The number of files exceeds the allowed limit.');
+    expect(mockUpload).toHaveBeenCalled();
   });
 
   it('should return 400 if file is not found', async () => {
     const response = await request(app).post('/billing/upload-proof');
 
     expect(response.status).toBe(400);
-    expect(response.body.message).toBe('No files were uploaded.');
+    expect(response.body.message).toBe('No files were uploaded. Please upload at least one file.');
   });
 
   it('should handle upload errors', async () => {
