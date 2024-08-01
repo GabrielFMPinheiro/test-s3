@@ -43,7 +43,7 @@ class FileUpload {
         message: errorMessage,
       });
     } else {
-      next(err); // Passa erros não relacionados ao multer para o middleware de erro global
+      next(err);
     }
   }
 }

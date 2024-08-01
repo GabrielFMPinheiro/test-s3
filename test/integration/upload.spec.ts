@@ -26,7 +26,7 @@ describe('POST /billing/upload-proof', () => {
 
   it('should return a 400 error if more than 10 documents are inserted', async () => {
     // Gera nomes de arquivos numerados de 1 a 11
-    const fileNames = Array.from({ length: 11 }, (_, i) => `testFile${i + 1}.txt`);
+    const fileNames = Array.from({ length: 11 }, (_, i) => `testFileUpload${i + 1}.txt`);
 
     const testFilePaths = fileNames.map((fileName) => {
       const filePath = path.join(__dirname, fileName);

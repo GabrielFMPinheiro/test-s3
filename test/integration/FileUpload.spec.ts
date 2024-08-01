@@ -23,7 +23,7 @@ describe('FileUpload Component Tests', () => {
 
   it('should return error if too many files are uploaded', async () => {
     // Gera nomes de arquivos numerados de 1 a 11
-    const fileNames = Array.from({ length: 11 }, (_, i) => `testFile${i + 1}.txt`);
+    const fileNames = Array.from({ length: 11 }, (_, i) => `testFileFileStorage${i + 1}.txt`);
 
     const testFilePaths = fileNames.map((fileName) => {
       const filePath = path.join(__dirname, fileName);
